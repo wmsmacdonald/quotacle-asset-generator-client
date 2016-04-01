@@ -1,28 +1,32 @@
-var assetGeneratorSocket = require('./conf/asset_generator_socket');
+var assetGeneratorSocket = require('./asset_generator_socket');
 
 module.exports.connect = function connect(apiKey, callback) {
   assetGeneratorSocket.connect(apiKey, function(err, client) {
     if (err) return callback(err);
 
-    assetGeneratorConnection = {
+    var assetGeneratorConnection = {
       createThumbnail: function createThumbnail(file, timeOffset, callback) {
-        client.sendAsync(JSON.stringify({
+        client.sendAsync({
           action: 'createThumbnail',
           file: file,
           timeOffset: timeOffset
-        }), callback);
+        }, callback);
       },
       createVideoClip: function createVideoClip(file, startTime, endTime, callback) {
         endTime = endTime || endTime + 10;
-        client.sendAsync(JSON.stringify({
+        client.sendAsync({
           action: 'createThumbnail',
           file: file,
           startTime: startTime,
           endTime: endTime
-        }), callback);
+        }, callback);
+      },
+      close: function close() {
+        client.end();
       }
     };
 
     callback(false, assetGeneratorConnection);
   });
+
 };

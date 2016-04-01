@@ -8,12 +8,14 @@ var PORT = 5340;
 
 module.exports.connect = function(apiKey, callback) {
   if (!apiKey) {
-    var apiKeyFile = fs.readFileSync(path.join(__dirname, 'secrets/asset_generator_api_key.conf'));
-    apiKey = apiKeyFile.toString().split('\n')[0];
+    apiKey = require('./secrets/api_key.json');
   }
 
   var client = new net.Socket();
-  var open = false;
+
+  client.open = false;
+
+
 
   client.connect(PORT, HOST, function() {
     open = true;
@@ -27,6 +29,7 @@ module.exports.connect = function(apiKey, callback) {
   client.on('data', function(data) {
     data = JSON.parse(data);
     if (initialSetup) {
+      initialSetup = false;
       if (data.authSuccess) {
         client.sendAsync = sendAsync;
         console.log('authenticated');
@@ -35,7 +38,7 @@ module.exports.connect = function(apiKey, callback) {
       }
       else {
         client.end();
-        open = false;
+        client.open = false;
         callback('Socket authentication failed');
         return;
       }
@@ -43,8 +46,8 @@ module.exports.connect = function(apiKey, callback) {
   });
 
   client.on('close', function() {
-    if (open) {
-      open = false;
+    if (client.open) {
+      client.open = false;
       callback('Socket disconnected');
     }
   });
@@ -54,16 +57,16 @@ module.exports.connect = function(apiKey, callback) {
 // use ids to keep track of multiple requests at the same time
 var ids = 0;
 
-function sendAsync(message, client, callback) {
+function sendAsync(message, callback) {
   var requestId = ids++;
-  client.write(JSON.stringify({
+  this.write(JSON.stringify({
     requestId: requestId,
     message: message
   }));
-  client.on('data', function (data) {
-    data = JSON.stringify(data);
 
-    if (data.requestId === requestId) {
+  this.on('data', function (data) {
+    data = JSON.parse(data.toString());
+    if (data.requestId == requestId) {
       if (data.err) return callback(data.err);
 
       callback(false, data.message);
