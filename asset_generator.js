@@ -10,16 +10,20 @@ module.exports.connect = function connect(apiKey, callback) {
           action: 'createThumbnail',
           file: file,
           timeOffset: timeOffset
-        }, callback);
+        }, function(err, message) {
+          receivedMessage(err, message, callback);
+        });
       },
       createVideoClip: function createVideoClip(file, startTime, endTime, callback) {
         endTime = endTime || endTime + 10;
         client.sendAsync({
-          action: 'createThumbnail',
+          action: 'createVideoClip',
           file: file,
           startTime: startTime,
           endTime: endTime
-        }, callback);
+        }, function(err, message) {
+          receivedMessage(err, message, callback);
+        });
       },
       close: function close() {
         client.end();
@@ -30,3 +34,9 @@ module.exports.connect = function connect(apiKey, callback) {
   });
 
 };
+
+function receivedMessage(err, message, callback) {
+  if (message.err) return callback(message.err);
+
+  callback(false, message.url);
+}
