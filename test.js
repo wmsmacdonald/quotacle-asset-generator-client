@@ -40,12 +40,13 @@ function test_assetGeneratorConnectionWrongKey(callback) {
 
 function test_createThumbnail(callback) {
   assetGeneratorClient.connect(undefined, function(err, assetGeneratorConnection) {
+    var startTime = new Date();
     if (err) {
       console.log(err);
       return testing.failure(callback);
     }
 
-    assetGeneratorConnection.createThumbnail('movies/100/full.mp4', 1000, function(err, thumbnailUrl) {
+    assetGeneratorConnection.createThumbnail('movies/5/full.mp4', 1000, function(err, thumbnailUrl) {
       assetGeneratorConnection.close();
 
       if (err || !thumbnailUrl) {
@@ -56,6 +57,12 @@ function test_createThumbnail(callback) {
       var options = url.parse(thumbnailUrl);
       options.method = 'HEAD';
       options.agent = false; // don't keep-alive
+
+      var duration = (new Date() - startTime);
+      if (duration > 1000) {
+        console.log('Too slow: took %d milliseconds', duration)
+        return testing.failure(callback);
+      }
 
       var req = http.request(options, function(res) {
         if (res.statusCode === 200) {

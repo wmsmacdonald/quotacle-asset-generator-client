@@ -1,5 +1,5 @@
 {
-  "name": "quotacle-cdn-client",
+  "name": "quotacle-asset-generator-client",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wmsmacdonald/quotacle-cdn-client.git"
+    "url": "git+https://github.com/wmsmacdonald/quotacle-asset-generator-client"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/wmsmacdonald/quotacle-cdn-client/issues"
+    "url": "https://github.com/wmsmacdonald/quotacle-asset-generator-client/issues"
   },
-  "homepage": "https://github.com/wmsmacdonald/quotacle-cdn-client#readme",
+  "homepage": "https://github.com/wmsmacdonald/quotacle-asset-generator-client#readme",
   "dependencies": {
     "testing": "^0.2.3"
   }

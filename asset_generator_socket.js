@@ -3,7 +3,7 @@ var fs = require('fs');
 var path = require('path');
 
 var HOST = '127.0.0.1';
-//var HOST = 'fgen.quotacle.com';
+var HOST = 'fgen.quotacle.com';
 var PORT = 5340;
 
 module.exports.connect = function(apiKey, callback) {
